@@ -20,7 +20,7 @@ export default async function connectDB() {
       ...(process.env.DBAUTHSOURCE && { authSource: process.env.DBAUTHSOURCE })
     };
 
-    await mongoose.connect(process.env.DATABASE_URL, DB_OPTIONS);
+    await mongoose.connect("mongodb+srv://pranavdeshmukh5454:B6RZFcMzQCwA4XwS@cep.nb8xmlp.mongodb.net/?retryWrites=true&w=majority&appName=cep", DB_OPTIONS);
     console.log("MongoDB connected successfully!");
     return mongoose.connection;
   } catch (error) {
