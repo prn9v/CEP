@@ -111,29 +111,27 @@ const ResidentsList = () => {
 
   const fetchResidents = async () => {
     try {
-      // First try to fetch from API
       const response = await fetch("/api/resident", {
         method: "GET",
       });
-
+  
       if (response.ok) {
         const data = await response.json();
-        console.log(data.residents);
-        setResidents(data.residents);
+        console.log(data); // Just log it to confirm
+        setResidents(data.residents); // data.residents
       } else {
         console.error("Failed to fetch Residents:", response.statusText);
-        // Fallback to mock data if API fails
         setResidents(mockResidents);
       }
     } catch (error) {
       console.error("Error fetching Residents data:", error);
-      // Fallback to mock data if API call fails
       setResidents(mockResidents);
     }
   };
   
+  
   // Apply filters and search
-  const filteredResidents = residents.filter(resident => {
+  const filteredResidents =  (residents || []).filter(resident => {
     const matchesSearch = resident.name?.toLowerCase().includes(searchTerm.toLowerCase());
     
     const matchesGender = filters.gender === 'all' || resident.gender === filters.gender;

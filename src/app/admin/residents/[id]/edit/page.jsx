@@ -300,7 +300,7 @@ const ResidentEdit = ({ params }) => {
 
         <div className="resident-edit-container">
           <div className="resident-edit-header">
-            <Link href={`/admin/resident/${residentId}`}>
+            <Link href={`/admin/residents/${residentId}`}>
               <button className="back-button">
                 <i className="back-icon"></i>
                 <span>Back to Resident Details</span>

@@ -4,6 +4,10 @@ import './Donate.css';
 import { Heart, DollarSign, CreditCard, Coffee } from 'lucide-react';
 
 const Donate = () => {
+
+  const handleSubmit = () => {
+    alert("Payment Successful. Thanks For Donating money for this Noble Cause")
+  }
   return (
     <section className="donate-section" id="donate">
       <div className="container">
@@ -93,7 +97,7 @@ const Donate = () => {
                 </div>
               </div>
               
-              <button type="submit" className="donate-btn">
+              <button type="submit" className="donate-btn" onClick={handleSubmit}> 
                 <Heart size={16} /> Donate Now
               </button>
             </form>

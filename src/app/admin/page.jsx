@@ -1,10 +1,45 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import "../../styles/AdminPanel.css";
 
 const AdminPanel = () => {
+  const [hasMounted, setHasMounted] = useState(false);
+  const [residents, setResidents] = useState([]);
+  const [rehabilitated, setRehabilitated] = useState([]);
+  const [rehabilitatedCount, setRehabilitatedCount] = useState(0);
+  const [residentsLength, setResidentsLength] = useState(0);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
+
+  useEffect(() => {
+    const fetchResidents = async () => {
+      try {
+        const response = await fetch("/api/resident");
+
+        if (response.ok) {
+          const data = await response.json();
+          setResidents(data.residents);
+          setRehabilitated(data.residents.filter((resident) => resident.isNowRehabilited));
+          setRehabilitatedCount(data.residents.filter((resident) => resident.isNowRehabilited).length);
+          setResidentsLength(data.residents.length);
+        } else {
+          console.error("Failed to fetch Residents:", response.statusText);
+        }
+      } catch (error) {
+        console.error("Error fetching Residents data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchResidents();
+  }, []);
+
   return (
     <div className="admin-container">
       <div className="admin-sidebar">
@@ -12,6 +47,7 @@ const AdminPanel = () => {
           <h2>Sahyadri Hope</h2>
           <p>Admin Panel</p>
         </div>
+
         <nav className="admin-nav">
           <Link href="/admin" className="nav-item active">
             <i className="nav-icon dashboard-icon"></i>
@@ -54,11 +90,13 @@ const AdminPanel = () => {
 
         <div className="dashboard-stats">
           <div className="stat-box">
-            <h3>150</h3>
+            <h3>{!hasMounted || loading ? "Loading..." : residentsLength}</h3>
             <p>Current Residents</p>
           </div>
-          <div className="stat-box">
-            <h3>75</h3>
+          <div className="stat-box ">
+            <h3>
+              {!hasMounted || loading ? "Loading..." : rehabilitatedCount}
+            </h3>
             <p>Rehabilitated</p>
           </div>
           <div className="stat-box">

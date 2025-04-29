@@ -1,18 +1,12 @@
-'use server'
-import connectDB from "@/lib/connectDB";
+"use server";
 import Resident from "@/models/Resident";
-// import clientPromise from '@/lib/mongodb';
-import { NextResponse } from "next/server"; // Corrected import
+import connectDB from "@/lib/mongoose"; // ✅ import your mongoose connection
+import { NextResponse } from "next/server";
 
 export async function GET(req) {
   try {
-    // Establish a connection to the database
-    await connectDB();
-    // const client = await clientPromise;
-    // const db = client.db('cep');
-    // const residents = await db.collection('Resident').find({}).toArray();
+    await connectDB(); // ✅ connect to Mongoose first
 
-    // Fetch all events from the database
     const residents = await Resident.find();
 
     if (!residents || residents.length === 0) {
@@ -22,27 +16,24 @@ export async function GET(req) {
       );
     }
 
-    // Respond with the fetched events
     return NextResponse.json(
       { residents, message: "Residents fetched successfully" },
       { status: 200 }
     );
   } catch (error) {
-    // Log the error for debugging purposes (avoid exposing sensitive details in production)
-    console.error("Error fetching Residents:", error);
-
+    console.error("Error fetching residents:", error);
     return NextResponse.json(
-      { message: "Failed to fetch Residents", error: error.message },
+      { message: "Failed to fetch residents", error: error.message },
       { status: 500 }
     );
   }
 }
 
+
 export async function POST(req) {
   try {
-    await connectDB();
+    await connectDB(); // Ensure mongoose is connected
 
-    // Parse request body
     const body = await req.json();
     const {
       name,
@@ -57,40 +48,40 @@ export async function POST(req) {
     } = body;
 
     // Validate required fields
-    if (!name || !age || !gender === undefined) {
+    if (!name || age === undefined || gender === undefined) {
       return NextResponse.json(
         { message: "Missing required fields" },
         { status: 400 }
       );
     }
 
-    // Create a new resident
-    const newResident = new Resident({
-        name,
-        age,
-        gender,
-        isCurrentlyPresent,
-        isNowRehabilited,
-        isAlive,
-        photoOfPerson,
-        addharCard,
-        medicalReportPhoto,
+    //  Create new resident using the Mongoose model
+    const newResident = await Resident.create({
+      name,
+      age,
+      gender,
+      isCurrentlyPresent,
+      isNowRehabilited,
+      isAlive,
+      photoOfPerson,
+      addharCard,
+      medicalReportPhoto,
+      createdAt: new Date(),
     });
 
-    // Save the resident to the database
-    await newResident.save();
-
     return NextResponse.json(
-      { message: "Resident created successfully", newResident },
+      {
+        message: "Resident created successfully",
+        resident: newResident,
+      },
       { status: 201 }
     );
   } catch (error) {
     console.error("Error creating Resident:", error);
-
-    // Return a detailed error response for debugging
     return NextResponse.json(
       { message: "Resident creation failed", error: error.message },
       { status: 500 }
     );
   }
 }
+

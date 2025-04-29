@@ -1,5 +1,5 @@
 'use server'
-import connectDB from "@/lib/connectDB";
+import connectDB from "@/lib/mongoose"; 
 import Resident from "@/models/Resident" 
 import { NextResponse } from "next/server"; // Corrected import
 
